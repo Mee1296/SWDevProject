@@ -1,4 +1,5 @@
 const Massageshop = require('../models/Massageshop')
+const Appointment = require('../models/Appointment');
 //@desc    GET all massageshops
 //@route    GET /api/v1/massageshops
 //@access   Public
@@ -18,7 +19,7 @@ exports.getMassageshops = async (req, res, next) => {
     let queryStr = JSON.stringify(reqQuery);
     queryStr = queryStr.replace(/\b(gt|gte|lt|lte|in)\b/g, match => `$${match}`);
     // console.log(queryStr);
-    query = Massageshop.find(JSON.parse(queryStr));
+    query = Massageshop.find(JSON.parse(queryStr)).populate('appointments');
 
     if(req.query.select){
         const fields = req.query.select.split(',').join(' ');
@@ -110,10 +111,12 @@ exports.updateMassageshop = async (req, res, next) => {
 //@access   Private
 exports.deleteMassageshop = async (req, res, next) => {
     try{
-        const massageshop = await Massageshop.findByIdAndDelete(req.params.id);
+        const massageshop = await Massageshop.findById(req.params.id);
         if(!massageshop){
-            return res.status(404).json({success:false, error: 'Massageshop not found'});
+            return res.status(404).json({success:false, error: `Massageshop not found with id of ${req.params.id}`});
         }
+        await Appointment.deleteMany({massageShop: req.params.id});
+        await massageshop.deleteOne({_id: req.params.id});
         res.status(200).json({success: true, data: {}});
     }catch(err){
         res.status(400).json({success:false});

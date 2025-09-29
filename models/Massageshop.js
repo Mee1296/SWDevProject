@@ -17,6 +17,17 @@ const MassageshopSchema = new mongoose.Schema({
         type: String,
         required: true
     }
+}, {
+    toJSON: {virtuals:true},
+    toObject: {virtuals:true}
 });
 
-module.exports = mongoose.model('Massageshop', MassageshopSchema);
+//Reverse populate with virtuals
+MassageshopSchema.virtual('appointments', {
+    ref: 'Appointment',
+    localField: '_id',
+    foreignField: 'massageShop',
+    justOne: false
+});
+
+module.exports = mongoose.model('MassageShop', MassageshopSchema);

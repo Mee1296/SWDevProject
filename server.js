@@ -20,10 +20,12 @@ app.use(cookieParser());
 //Route files
 const massageshops = require('./routes/massageshops')
 const auth = require('./routes/auth');
+const appointments = require('./routes/Appointments');
 
 //Route
 app.use('/api/v1/massageshops', massageshops);
 app.use('/api/v1/auth', auth);
+app.use('/api/v1/appointments', appointments);
 
 //Enable extended query parser
 app.set('query parser', 'extended');
