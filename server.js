@@ -25,6 +25,9 @@ const auth = require('./routes/auth');
 app.use('/api/v1/massageshops', massageshops);
 app.use('/api/v1/auth', auth);
 
+//Enable extended query parser
+app.set('query parser', 'extended');
+
 const PORT = process.env.PORT || 5000;
 const server = app.listen(PORT, console.log('Server is running in ', process.env.NODE_ENV, ' mode on port ', PORT));
 
