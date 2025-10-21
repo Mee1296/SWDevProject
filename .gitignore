@@ -1,4 +1,0 @@
-# ignore all node_modules
-backend/node_modules/*
-# ignore config file
-backend/config/config.env
