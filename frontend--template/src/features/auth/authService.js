@@ -24,7 +24,8 @@ if(response.data) {
 }
  //Logout user
  const logout = () => {
- localStorage.setItem('user', null);
+ localStorage.removeItem('token')
+  localStorage.removeItem('user')
  }
  const authService ={
   register, 

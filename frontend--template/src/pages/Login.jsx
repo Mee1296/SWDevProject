@@ -19,6 +19,9 @@ import {useState, useEffect} from 'react'
  }
  //redirect when logged in
  if(isSuccess || user){
+  if(user && user.token){
+      localStorage.setItem('token', user.token)
+    }
  navigate('/')
  }
  dispatch(reset())

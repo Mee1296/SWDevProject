@@ -6,6 +6,11 @@ import {BrowserRouter as Router, Routes, Route} from
  import Home from './pages/Home'
  import Login from './pages/Login'
  import Register from './pages/Register'
+ import MassageShops from './pages/MassageShops'
+ import MassageShopDetail from './pages/MassageShopDetail'
+ import NewAppointment from './pages/NewAppointment'
+ import Tickets from './pages/Tickets'
+
  function App() {
  return (
  <>
@@ -13,6 +18,10 @@ import {BrowserRouter as Router, Routes, Route} from
  <div className="container">
  <Header />
  <Routes> <Route path='/' element={<Home/>} />
+ <Route path='/massageshops' element={<MassageShops/>} />
+  <Route path='/massageshops/:id' element={<MassageShopDetail/>} />
+  <Route path='/new-ticket' element={<NewAppointment/>} />
+  <Route path='/tickets' element={<Tickets/>} />
  <Route path='/login' element={<Login/>} />
  <Route path='/register' element={<Register/>} />
  </Routes>   

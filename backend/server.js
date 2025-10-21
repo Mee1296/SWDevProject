@@ -19,8 +19,10 @@ app.use(express.json());
 app.use(cookieParser());
 
 //cors
-app.use(cors());
-
+app.use(cors({
+  origin: ['http://localhost:3000','http://127.0.0.1:3000'],
+  credentials: true
+}));
 //Route files
 const massageshops = require('./routes/massageshops')
 const auth = require('./routes/auth');
