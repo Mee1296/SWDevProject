@@ -1,5 +1,6 @@
 const express = require('express');
 const dotenv = require('dotenv');
+const cors = require('cors');
 const connectDB = require('./config/db');
 const cookieParser = require('cookie-parser');
 
@@ -16,6 +17,9 @@ app.use(express.json());
 
 //Cookie parser
 app.use(cookieParser());
+
+//cors
+app.use(cors());
 
 //Route files
 const massageshops = require('./routes/massageshops')
