@@ -21,6 +21,7 @@ import {useState, useEffect} from 'react'
  if(isSuccess || user){
   if(user && user.token){
       localStorage.setItem('token', user.token)
+      localStorage.setItem('user', JSON.stringify(user))
     }
  navigate('/')
  }

@@ -9,8 +9,8 @@ import {BrowserRouter as Router, Routes, Route} from
  import MassageShops from './pages/MassageShops'
  import MassageShopDetail from './pages/MassageShopDetail'
  import NewAppointment from './pages/NewAppointment'
- import Tickets from './pages/Tickets'
-
+import Tickets from './pages/Tickets'
+import EditAppointment from './pages/EditAppointment'
  function App() {
  return (
  <>
@@ -22,6 +22,7 @@ import {BrowserRouter as Router, Routes, Route} from
   <Route path='/massageshops/:id' element={<MassageShopDetail/>} />
   <Route path='/new-ticket' element={<NewAppointment/>} />
   <Route path='/tickets' element={<Tickets/>} />
+  <Route path='/appointments/:id/edit' element={<EditAppointment/>} />
  <Route path='/login' element={<Login/>} />
  <Route path='/register' element={<Register/>} />
  </Routes>   
