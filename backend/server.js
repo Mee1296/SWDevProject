@@ -3,7 +3,6 @@ const dotenv = require('dotenv');
 const cors = require('cors');
 const connectDB = require('./config/db');
 const cookieParser = require('cookie-parser');
-const mongoSanitize = require('express-mongo-sanitize');
 const helmet = require('helmet');
 const {xss} = require('express-xss-sanitizer');
 const reateLimit = require('express-rate-limit');
@@ -23,8 +22,6 @@ app.use(express.json());
 //Cookie parser
 app.use(cookieParser());
 
-//Sanitize data
-app.use(mongoSanitize());
 
 //Set security headers
 app.use(helmet());
