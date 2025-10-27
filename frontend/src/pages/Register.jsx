@@ -42,7 +42,7 @@
  name,
  email,
  password,
- role
+ role: 'user'
  }
  dispatch(register(userData))
  }
@@ -68,9 +68,7 @@
           <div className="form-group">
             <input type="password" className='form-control' id='password2' name='password2' value={password2} onChange={onChange} placeholder='Confirm Your password' required/>
           </div>
-         <div className="form-group">
- <input type="text" className='form-control' id='role' name='role' value={role} onChange={onChange} placeholder='Enter Your Role' required/>
- </div>
+         
           <div className='form-group'>
             <button className='btn btn-block'>Submit</button>
           </div>

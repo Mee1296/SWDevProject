@@ -54,6 +54,18 @@ exports.createAppointment = async (req, res, next) => {
 
     // build appointment — prefer date/time fields from body
     const { date, time, status } = req.body
+    if (!date) return res.status(400).json({ success: false, message: 'Please specify a date' })
+
+    // Prevent duplicate (same date + shop)
+    const existing = await Appointment.findOne({
+      user: req.user.id,
+      massageShop: shop._id,
+      date: new Date(date)
+    })
+    if (existing) {
+      return res.status(400).json({ success: false, message: 'You already booked this massage shop for that date' })
+    }
+    
     const appointment = await Appointment.create({
       user: req.user.id,
       massageShop: shop._id,
