@@ -40,7 +40,7 @@ export default function MassageShopDetail() {
   const openCloseTime = getField(shop, 'openCloseTime', 'openCloseTime') || getField(shop, 'openCloseTime', 'Open-Close Time') || getField(shop, 'openCloseTime', 'OpenCloseTime');
   return (
     <div style={{ padding: 20 }}>
-      <h2>{shop.name}</h2>
+      <h2><b>Name: </b>{name}</h2>
       <div><b>Address:</b> {address}</div>
       <div><b>Telephone:</b> {telephone}</div>
       <div><b>Open-Close:</b> {openCloseTime}</div>

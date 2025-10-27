@@ -34,21 +34,23 @@ function MassageShops() {
   if (!shops.length) return <div>No massage shops found.</div>;
 
   return (
-    <div>
+    <div style={{ padding: 20 }}>
       <h2>All Massage Shops</h2>
       <ul style={{ listStyle: 'none', padding: 0 }}>
-        {shops.map(s => (
-          <li key={s._id} style={{ border: '1px solid #ddd', padding: 12, marginBottom: 8 }}>
-            <h3>{s.name}</h3>
-            <div>{s.address}</div>
-            <div>{s.telephone}</div>
-            <div>{s.openCloseTime}</div>
-            <div style={{ marginTop: 8 }}>
-              <Link to={`/massageshops/${s._id}`}>View details</Link>
-              {/* <Link to="/new-ticket" style={{ marginLeft: 12 }}>Create Appointment</Link> */}
-            </div>
-          </li>
-        ))}
+        {shops.map(s => {
+          const name = s.name ?? s.Name;
+          const address = s.address ?? s.Address;
+          const telephone = s.telephone ?? s.Telephone;
+          const openCloseTime = s.openCloseTime ?? s['Open-Close Time'];
+          return (
+            <li key={s._id} style={{ border: '1px solid #ddd', padding: 12, marginBottom: 8, borderRadius: 4 }}>
+              <h3>{name}</h3>
+              <div style={{ marginTop: 8 }}>
+                <Link to={`/massageshops/${s._id}`}>View details</Link>
+              </div>
+            </li>
+          );
+        })}
       </ul>
     </div>
   );

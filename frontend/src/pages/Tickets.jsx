@@ -15,6 +15,8 @@ export default function Tickets() {
   const token = localStorage.getItem('token')
   const user = JSON.parse(localStorage.getItem('user') || 'null')
   const isAdmin = user?.role === 'admin'
+  console.log(user?.role);
+  console.log(isAdmin);
 
   useEffect(() => {
     if (!token) {
@@ -112,7 +114,7 @@ export default function Tickets() {
 
   return (
     <div style={{ padding: 20 }}>
-      <h2>Your Appointments</h2>
+      <h2>{isAdmin ? 'Appointments' : 'Your Appointments'}</h2>
       <ul style={{ listStyle: 'none', padding: 0 }}>
         {appointments.map(app => {
           // massageShop may be populated object or just an id/string
@@ -120,15 +122,15 @@ export default function Tickets() {
           const shopName = typeof shopObj === 'string'
             ? shopObj
             : shopObj?.name ?? shopObj?.Name ?? shopObj?.Address ?? shopObj?._id ?? '—'
-          const shopId = typeof shopObj === 'string'
-            ? shopObj
-            : shopObj?._id ?? shopObj?.id ?? ''
 
           const { dateStr, timeStr } = parseDateTime(app)
           const status = getStatus(app)
 
           return (
              <li key={app._id} style={{ border: '1px solid #ddd', padding: 12, marginBottom: 8 }}>
+               {isAdmin && app.user && (
+                <div><b>User:</b> {app.user.name} ({app.user.email})</div>
+               )}
                <div><b>Shop:</b> {shopName}</div>
                <div><b>Date:</b> {dateStr}</div>
                <div><b>Time:</b> {timeStr}</div>

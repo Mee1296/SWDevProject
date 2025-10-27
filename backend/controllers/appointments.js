@@ -43,7 +43,7 @@ exports.getAppointment = async (req, res, next) => {
 exports.createAppointment = async (req, res, next) => {
   try {
     // ensure shop exists
-    const shop = await Massageshop.findById(req.params.id)
+    const shop = await Massageshop.findById(req.params.massageShopId)
     if (!shop) return res.status(404).json({ success: false, message: 'MassageShop not found' })
 
     // limit: max 3 reservations per user (active)
@@ -53,25 +53,25 @@ exports.createAppointment = async (req, res, next) => {
     }
 
     // build appointment — prefer date/time fields from body
-    const { date, time, status } = req.body
-    if (!date) return res.status(400).json({ success: false, message: 'Please specify a date' })
+    const { date, time } = req.body
+    if (!date || !time) return res.status(400).json({ success: false, message: 'Please specify a date and time' })
+
+    const apptDate = new Date(`${date}T${time}`);
 
     // Prevent duplicate (same date + shop)
     const existing = await Appointment.findOne({
       user: req.user.id,
       massageShop: shop._id,
-      date: new Date(date)
+      apptDate: apptDate
     })
     if (existing) {
       return res.status(400).json({ success: false, message: 'You already booked this massage shop for that date' })
     }
     
     const appointment = await Appointment.create({
+      apptDate,
       user: req.user.id,
-      massageShop: shop._id,
-      date: date ? new Date(date) : undefined,
-      time: time || undefined,
-      status: status || 'booked'
+      massageShop: shop._id
     })
 
     return res.status(201).json({ success: true, data: appointment })
@@ -93,12 +93,15 @@ exports.updateAppointment = async (req, res, next) => {
       return res.status(403).json({ success: false, message: 'Not authorized to update this appointment' })
     }
 
-    const updates = {}
-    if (req.body.date) updates.date = new Date(req.body.date)
-    if (req.body.time) updates.time = req.body.time
-    if (req.body.status && req.user.role === 'admin') updates.status = req.body.status // only admin can change arbitrary status
+    // Combine date and time into apptDate if both are provided
+    if (req.body.date && req.body.time) {
+      appointment.apptDate = new Date(`${req.body.date}T${req.body.time}`);
+    }
 
-    appointment = await Appointment.findByIdAndUpdate(req.params.id, updates, { new: true, runValidators: true })
+    // only admin can change arbitrary status
+    if (req.body.status && req.user.role === 'admin') appointment.status = req.body.status
+
+    await appointment.save({ validateBeforeSave: true });
     return res.status(200).json({ success: true, data: appointment })
   } catch (err) {
     next(err)
@@ -118,7 +121,7 @@ exports.deleteAppointment = async (req, res, next) => {
       return res.status(403).json({ success: false, message: 'Not authorized to delete this appointment' })
     }
 
-    await appointment.remove()
+    await Appointment.findByIdAndDelete(req.params.id);
     return res.status(200).json({ success: true, data: {} })
   } catch (err) {
     next(err)
