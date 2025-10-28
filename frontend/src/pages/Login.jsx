@@ -1,4 +1,4 @@
-import {useState, useEffect} from 'react'
+import { useState, useEffect } from 'react';
  import {toast} from 'react-toastify'
  import {FaSignInAlt} from 'react-icons/fa'
  import {useSelector, useDispatch} from 'react-redux'
@@ -9,17 +9,42 @@ import {useState, useEffect} from 'react'
     email: '',
     password: '',
   });
-  const {name,email,password,password2}=formData;
+  const { email, password } = formData;
  const dispatch = useDispatch()
  const navigate =useNavigate()
  const {user,isLoading, isError, isSuccess, message}=useSelector(state=>state.auth)
+
+  const MAX_LOGIN_ATTEMPTS = 3;
+  const LOCKOUT_DURATION_MS = 60 * 60 * 1000; // 1 hour
+
  useEffect(()=>{
  if(isError){
- toast.error(message)
+    toast.error(message);
+
+    // Handle login failure for lockout
+    const attemptsData = JSON.parse(localStorage.getItem('loginAttempts') || '{}');
+    const userAttempts = attemptsData[email] || { attempts: 0, lockUntil: null };
+
+    userAttempts.attempts += 1;
+
+    if (userAttempts.attempts >= MAX_LOGIN_ATTEMPTS) {
+      userAttempts.lockUntil = Date.now() + LOCKOUT_DURATION_MS;
+      toast.error(`Account locked for 1 hour due to too many failed login attempts.`);
+    }
+
+    attemptsData[email] = userAttempts;
+    localStorage.setItem('loginAttempts', JSON.stringify(attemptsData));
  }
 
   //redirect when logged in
   if (isSuccess && user) {
+    // Clear login attempts on successful login
+    const attemptsData = JSON.parse(localStorage.getItem('loginAttempts') || '{}');
+    if (attemptsData[email]) {
+      delete attemptsData[email];
+      localStorage.setItem('loginAttempts', JSON.stringify(attemptsData));
+    }
+
     if (user.token) {
       localStorage.setItem('token', user.token);
       localStorage.setItem('user', JSON.stringify(user));
@@ -62,12 +87,24 @@ import {useState, useEffect} from 'react'
   }
   const onSubmit =(e) => {
     e.preventDefault()
- const userData={
- email,
- password
- }
- dispatch(login(userData))
+
+    // Check for lockout before attempting to log in
+    const attemptsData = JSON.parse(localStorage.getItem('loginAttempts') || '{}');
+    const userAttempts = attemptsData[email];
+
+    if (userAttempts && userAttempts.lockUntil && userAttempts.lockUntil > Date.now()) {
+      const remainingTime = Math.ceil((userAttempts.lockUntil - Date.now()) / (1000 * 60));
+      toast.error(`Account is locked. Please try again in ${remainingTime} minutes.`);
+      return;
+    }
+
+    const userData={
+      email,
+      password
+    }
+    dispatch(login(userData))
   }
+
   return(
     <>
       <section className="heading">
