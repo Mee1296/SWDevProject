@@ -27,7 +27,7 @@ exports.getAppointment = async (req, res, next) => {
     if (!appointment) return res.status(404).json({ success: false, message: 'Appointment not found' })
 
     // ownership / admin check
-    if (appointment.user.toString() !== req.user.id && req.user.role !== 'admin') {
+    if (appointment.user._id.toString() !== req.user.id && req.user.role !== 'admin') {
       return res.status(403).json({ success: false, message: 'Not authorized to view this appointment' })
     }
 
