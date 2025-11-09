@@ -13,9 +13,15 @@ const MassageshopSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    openCloseTime: {
+    openTime: {
         type: String,
-        required: true
+        required: true,
+        match: [/^([01]\d|2[0-3]):([0-5]\d)$/, 'Please use HH:MM format']
+    },
+    closeTime: {
+        type: String,
+        required: true,
+        match: [/^([01]\d|2[0-3]):([0-5]\d)$/, 'Please use HH:MM format']
     }
 }, {
     toJSON: {virtuals:true},

@@ -31,13 +31,8 @@ export default function MassageShopDetail() {
   if (error) return <div>Error: {error}</div>;
   if (!shop) return <div>Shop not found.</div>;
   // console.log("shop", shop.Address, shop.Telephone);
-  // helper to handle different key casing
-  const getField = (obj, camel, alt) => obj?.[camel] ?? obj?.[alt] ?? '';
-
-  const name = getField(shop, 'name', 'Name');
-  const address = getField(shop, 'address', 'Address');
-  const telephone = getField(shop, 'telephone', 'Telephone');
-  const openCloseTime = getField(shop, 'openCloseTime', 'openCloseTime') || getField(shop, 'openCloseTime', 'Open-Close Time') || getField(shop, 'openCloseTime', 'OpenCloseTime');
+  const { name, address, telephone, openTime, closeTime } = shop;
+  const openCloseTime = `${openTime} - ${closeTime}`;
   return (
     <div style={{ padding: 20 }}>
       <h2><b>Name: </b>{name}</h2>

@@ -38,10 +38,7 @@ function MassageShops() {
       <h2>All Massage Shops</h2>
       <ul style={{ listStyle: 'none', padding: 0 }}>
         {shops.map(s => {
-          const name = s.name ?? s.Name;
-          const address = s.address ?? s.Address;
-          const telephone = s.telephone ?? s.Telephone;
-          const openCloseTime = s.openCloseTime ?? s['Open-Close Time'];
+          const name = s.name;
           return (
             <li key={s._id} style={{ border: '1px solid #ddd', padding: 12, marginBottom: 8, borderRadius: 4 }}>
               <h3>{name}</h3>

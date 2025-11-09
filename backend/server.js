@@ -48,7 +48,7 @@ app.use(cors({
 //Route files
 const massageshops = require('./routes/massageshops')
 const auth = require('./routes/auth');
-const appointments = require('./routes/Appointments');
+const appointments = require('./routes/appointments');
 
 //Route
 app.use('/api/v1/massageshops', massageshops);

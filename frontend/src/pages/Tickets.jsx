@@ -121,7 +121,7 @@ export default function Tickets() {
           const shopObj = app.massageShop
           const shopName = typeof shopObj === 'string'
             ? shopObj
-            : shopObj?.name ?? shopObj?.Name ?? shopObj?.Address ?? shopObj?._id ?? '—'
+            : shopObj?.name ?? shopObj?._id ?? '—'
 
           const { dateStr, timeStr } = parseDateTime(app)
           const status = getStatus(app)

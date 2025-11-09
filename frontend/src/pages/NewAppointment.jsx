@@ -102,12 +102,12 @@ export default function NewAppointment() {
           <div style={centerWrapper}>
             <div style={shopCard}>
               <div style={{ fontSize: 18, fontWeight: 600 }}>
-                {selectedShop?.name ?? selectedShop?.Name ?? shopId}
+                {selectedShop?.name ?? shopId}
               </div>
-              <div style={{ marginTop: 6 }}>{selectedShop?.address ?? selectedShop?.Address}</div>
-              <div style={{ marginTop: 6 }}>{selectedShop?.telephone ?? selectedShop?.Telephone}</div>
+              <div style={{ marginTop: 6 }}>{selectedShop?.address}</div>
+              <div style={{ marginTop: 6 }}>{selectedShop?.telephone}</div>
               <div style={{ marginTop: 6 }}>
-                <b>Open-Close:</b> {selectedShop?.openCloseTime ?? selectedShop?.['Open-Close Time'] ?? ''}
+                <b>Open-Close:</b> {selectedShop ? `${selectedShop.openTime} - ${selectedShop.closeTime}` : ''}
               </div>
               <div style={{ marginTop: 10 }}>
                 <Link to={`/massageshops/${shopId}`}>View Shop</Link>
@@ -121,7 +121,7 @@ export default function NewAppointment() {
             <option value="">-- Select a shop --</option>
             {shops.map(s => (
               <option key={s._id} value={s._id}>
-                {s.name ?? s.Name ?? `${s._id}`}
+                {s.name ?? `${s._id}`}
               </option>
             ))}
           </select>

@@ -11,7 +11,11 @@ exports.getAppointments = async (req, res, next) => {
       return res.status(200).json({ success: true, count: appointments.length, data: appointments })
     }
     // regular user -> only their appointments
-    const appointments = await Appointment.find({ user: req.user.id }).populate('massageShop')
+    const appointments = await Appointment.find({ user: req.user.id }).populate({
+      path: 'massageShop',
+      // Select all fields except the virtual 'appointments' field to prevent circular population
+      select: 'name address telephone openTime closeTime'
+    })
     return res.status(200).json({ success: true, count: appointments.length, data: appointments })
   } catch (err) {
     next(err)
@@ -57,6 +61,26 @@ exports.createAppointment = async (req, res, next) => {
     if (!date || !time) return res.status(400).json({ success: false, message: 'Please specify a date and time' })
 
     const apptDate = new Date(`${date}T${time}`);
+
+    // Check if the created date is valid
+    if (isNaN(apptDate.getTime())) return res.status(400).json({ success: false, message: 'Invalid date or time format' });
+
+    // Check if appointment is in the past
+    const now = new Date();
+    if (apptDate < now) {
+      return res.status(400).json({ success: false, message: 'Cannot book an appointment in the past' });
+    }
+
+    // Check if appointment time is within shop's open-close time
+    const [openHour, openMinute] = shop.openTime.split(':').map(Number);
+    const [closeHour, closeMinute] = shop.closeTime.split(':').map(Number);
+
+    const apptHour = apptDate.getHours();
+    const apptMinute = apptDate.getMinutes();
+
+    if (apptHour < openHour || (apptHour === openHour && apptMinute < openMinute) || apptHour > closeHour || (apptHour === closeHour && apptMinute > closeMinute)) {
+      return res.status(400).json({ success: false, message: `Appointment time is outside of shop's operating hours (${shop.openTime} - ${shop.closeTime})` });
+    }
 
     // Prevent duplicate (same date + shop)
     const existing = await Appointment.findOne({
