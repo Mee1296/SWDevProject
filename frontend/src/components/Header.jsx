@@ -20,6 +20,14 @@ function Header() {
         <Link to='/'>Support Desk</Link>
       </div>
 
+      <div className='header-user-indicator'>
+        {user ? (
+          <span>Welcome, {user.name}</span>
+        ) : (
+          <span>Please Login</span>
+        )}
+      </div>
+
       <ul>
         {/* Show Login/Register if no user */}
         {!user ? (

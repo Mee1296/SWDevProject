@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import { useSelector } from 'react-redux'
 import { toast } from 'react-toastify'
 import ShopModal from '../components/ShopModal'
 
@@ -12,23 +13,21 @@ export default function Tickets() {
   const [error, setError] = useState(null)
   const [modalShop, setModalShop] = useState(null)
 
-  const token = localStorage.getItem('token')
-  const user = JSON.parse(localStorage.getItem('user') || 'null')
+  const { user } = useSelector((state) => state.auth)
   const isAdmin = user?.role === 'admin'
-  console.log(user?.role);
-  console.log(isAdmin);
 
   useEffect(() => {
+    const token = user?.token || localStorage.getItem('token')
     if (!token) {
       setLoading(false)
       return
     }
     let mounted = true
     const load = async () => {
+      const url = `${API}/appointments`
       try {
-        const url = `${API}/appointments`
         const res = await fetch(url, {
-          headers: { Authorization: `Bearer ${token}` }
+          headers: { Authorization: `Bearer ${token}` },
         })
         if (!res.ok) {
           if (res.status === 401) { toast.error('Not authorized'); navigate('/login'); return }
@@ -46,9 +45,10 @@ export default function Tickets() {
     }
     load()
     return () => { mounted = false }
-  }, [token, isAdmin, navigate])
+  }, [user, navigate])
 
   const handleDelete = async (id) => {
+    const token = user?.token || localStorage.getItem('token')
     if (!confirm('Delete this appointment?')) return
     try {
       const res = await fetch(`${API}/appointments/${id}`, {
@@ -63,6 +63,7 @@ export default function Tickets() {
     }
   }
 
+  const token = user?.token || localStorage.getItem('token')
   if (loading) return <div style={{ padding: 20 }}>Loading appointments…</div>
   if (!token) return <div style={{ padding: 20 }}>You must <Link to="/login">login</Link> to view appointments.</div>
   if (error) return <div style={{ padding: 20 }}>Error: {error}</div>

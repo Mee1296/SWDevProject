@@ -6,16 +6,33 @@ const Massageshop = require('../models/Massageshop')
 // @access  Private (admin gets all)
 exports.getAppointments = async (req, res, next) => {
   try {
+    if (!req.user) return res.status(401).json({ success: false, message: 'Not authenticated' })
+
     if (req.user && req.user.role === 'admin') {
-      const appointments = await Appointment.find().populate('massageShop').populate('user', 'name email')
-      return res.status(200).json({ success: true, count: appointments.length, data: appointments })
+      console.log('Admin user detected:', req.user);
+      const appointments = await Appointment.find();
+      console.log('Raw appointments found:', appointments);
+      
+      const populatedAppointments = await Appointment.find().populate({
+        path: 'massageShop',
+        select: 'name address telephone openTime closeTime'
+      }).populate('user', 'name email');
+      
+      console.log('Populated appointments:', populatedAppointments);
+      return res.status(200).json({ 
+        success: true, 
+        count: populatedAppointments.length, 
+        data: populatedAppointments 
+      });
     }
     // regular user -> only their appointments
+    console.log('requesting user id:', req.user.id) // ensure user id logged
     const appointments = await Appointment.find({ user: req.user.id }).populate({
       path: 'massageShop',
       // Select all fields except the virtual 'appointments' field to prevent circular population
       select: 'name address telephone openTime closeTime'
     })
+    console.log('user appointments:', appointments);
     return res.status(200).json({ success: true, count: appointments.length, data: appointments })
   } catch (err) {
     next(err)
